@@ -15,6 +15,8 @@ namespace LibraryApp
         public int MemberId { get { return _memberId; } set { _memberId = value; } }
         public List<Book> CheckedOutBooks { get { return _checkedOutBooks; } set { _checkedOutBooks = value; } }
 
+        public decimal OutstandingFine { get; set; }
+
         // Constructor
         public Member(string name, int memberId)
         {
@@ -52,6 +54,21 @@ namespace LibraryApp
                 throw new InvalidOperationException($"Member '{Name}' has not checked out the book '{book.Title}'.");
             // Remove book from List
             CheckedOutBooks.Remove(book);
+        }
+        public void AddFine(decimal amount)
+        {
+            if (amount < 0)
+                throw new ArgumentOutOfRangeException(nameof(amount), "Fine amount cannot be negative.");
+
+            OutstandingFine += amount;
+        }
+        public void PayFine(decimal amount)
+        {
+            if (amount < 0)
+                throw new ArgumentOutOfRangeException(nameof(amount), "Payment amount cannot be negative.");
+            if (amount > OutstandingFine)
+                throw new InvalidOperationException($"Payment amount ({amount}) exceeds the outstanding fine balance ({OutstandingFine}).");
+            OutstandingFine -= amount;
         }
     }//end of Member
 }//end of namespace
